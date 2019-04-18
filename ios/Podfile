@@ -1,0 +1,35 @@
+# Uncomment the next line to define a global platform for your project
+# platform :ios, '9.0'
+
+target 'TagsTimer' do
+  # Uncomment the next line if you're using Swift or would like to use dynamic frameworks
+  # use_frameworks!
+
+  # Pods for TagsTimer
+
+  target 'TagsTimer-tvOSTests' do
+    inherit! :search_paths
+    # Pods for testing
+    pod 'RNVectorIcons', :path => '../node_modules/react-native-vector-icons'
+
+  end
+
+  target 'TagsTimerTests' do
+    inherit! :search_paths
+    # Pods for testing
+  end
+
+end
+
+target 'TagsTimer-tvOS' do
+  # Uncomment the next line if you're using Swift or would like to use dynamic frameworks
+  # use_frameworks!
+
+  # Pods for TagsTimer-tvOS
+
+  target 'TagsTimer-tvOSTests' do
+    inherit! :search_paths
+    # Pods for testing
+  end
+
+end
