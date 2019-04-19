@@ -6,8 +6,18 @@ const calculateProgress = (now, start) => {
 
 export default timerMiddleware = store => next => action => {
 //    console.log('timer middleware action', action)
-
-    if ( action.type === UserActions.add ) {
+    if (action.type === UserActions.addTimerTags) {
+      const id = action.id;
+      const elem = store.getState().timer.timerStack[id];
+      action.payload = {
+        timerStart : elem.timerStart,
+        timerStop  : elem.timerStop,
+        interval   : elem.interval,
+        progress   : elem.progress,
+        tags       : action.tagsArr, 
+      }
+    }
+    else if ( action.type === UserActions.add ) {
         action.newTimerId = Date.now().toString();
     }
     else if (action.type === TimerActions.start) {

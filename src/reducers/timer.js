@@ -2,17 +2,21 @@ import { REHYDRATE } from 'redux-persist';
 import { TimerActions, UserActions, TagActions } from '../actions/index';
 
 const initialTime = '';
-const initialId = 'default'
+
+const initialId = 'defaultId'
+
+const initialTagsArr = [];
+
 const initialPayload = {
   timerStart: initialTime,
   timerStop: initialTime,
   interval: null,
   progress: 0,
-  tags: [],
+  tags: initialTagsArr,
 }
 
 const INITIAL_STATE = {
-  tagsList: [],
+  tagsList: initialTagsArr,
   timerId: [initialId],
   timerStack: {
     [initialId] : initialPayload
@@ -26,37 +30,75 @@ export default (state = INITIAL_STATE, action) => {
         console.log('redurers timer REHYDRATE')
         return {
           ...INITIAL_STATE
-        }
-      case UserActions.add:  
-        return {
-          timerId : [
-                ...state.timerId,
-                action.newTimerId
-            ],
-            timerStack : {
-              ...state.timerStack,
-              [action.newTimerId] : initialPayload
-            }
-          }  
-      case UserActions.remove:  
-        return {
-          timerId : state.timerId.filter((item) => item != action.id),
-          timerStack : {
-            ...state.timerStack
-          }
-        }  
+      }
       case TagActions.addTag:  
         return {
+          tagsList : [
+            ...state.tagsList,
+            {
+              [action.tagId] : action.tagValue
+            }
+          ],
           timerId : [
             ...state.timerId
           ],
           timerStack : {
             ...state.timerStack
           }
-        }  
+        }
+      case TagActions.removeTag:  
+        return {
+          tagsList : state.tagsList.filter((item) => item != action.tagId),
+          timerId : [
+          ...state.timerId
+          ],
+          timerStack : {
+            ...state.timerStack
+          }
+        }    
+      case UserActions.add:  
+        return {
+          tagsList: [
+            ...state.tagsList
+          ],
+          timerId : [
+            ...state.timerId,
+            action.newTimerId
+            ],
+          timerStack : {
+            ...state.timerStack,
+            [action.newTimerId] : initialPayload
+            }
+          }  
+      case UserActions.remove:  
+        return {
+          tagsList: [
+            ...state.tagsList
+          ],
+          timerId : state.timerId.filter((item) => item != action.id),
+          timerStack : {
+            ...state.timerStack
+          }
+        } 
+      case UserActions.addTimerTags:  
+        return {
+          tagsList: [
+            ...state.tagsList
+          ],
+          timerId : [
+            ...state.timerId
+          ],
+          timerStack : {
+            ...state.timerStack,
+            [action.id] : action.payload
+          }
+        } 
       case TimerActions.start:
         console.log('redurers timer START', action)
-        return { 
+        return {
+          tagsList: [
+            ...state.tagsList
+          ], 
           timerId : [
             ...state.timerId,
             action.id],
@@ -67,6 +109,9 @@ export default (state = INITIAL_STATE, action) => {
       case TimerActions.tick:
         console.log('redurers timer TICK', action);
         return {
+          tagsList: [
+            ...state.tagsList
+          ],
           timerId: [
             ...state.timerId
           ],
@@ -77,8 +122,10 @@ export default (state = INITIAL_STATE, action) => {
         } 
       case TimerActions.pause:
         console.log('redurers timer PAUSE', action);
-      
         return {
+          tagsList: [
+            ...state.tagsList
+          ],
           timerId: [
             ...state.timerId
           ],
@@ -90,6 +137,9 @@ export default (state = INITIAL_STATE, action) => {
         console.log('redurers timer STOP', action);
       
         return {
+          tagsList: [
+            ...state.tagsList
+          ],
           timerId: [
             ...state.timerId
           ],
@@ -101,13 +151,17 @@ export default (state = INITIAL_STATE, action) => {
       case TimerActions.reset:
         console.log('redurers timer RESET', action);
         return {
-            timerId: [
-              ...state.timerId
-            ],
-            timerStack: {
-              ...state.timerStack,
-            [action.id]: INITIAL_STATE
-          }}
+          tagsList: [
+            ...state.tagsList
+          ],
+          timerId: [
+            ...state.timerId
+          ],
+          timerStack: {
+            ...state.timerStack,
+          [action.id]: INITIAL_STATE
+          }
+        }
       default:
         return {
           ...state

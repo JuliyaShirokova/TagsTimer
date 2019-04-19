@@ -1,6 +1,6 @@
 import { connect } from 'react-redux';
 import Clock from '../Clock';
-import { timerStart, timerStop, timerPause, timerReset, removeTimer, addTags } from '../../../actions';
+import { timerStart, timerStop, timerPause, timerReset, removeTimer, addTimerTags } from '../../../actions';
 
 const mapStateToProps = state => ({
   timer : state.timer,
@@ -13,7 +13,7 @@ const mapDispatchToProps = dispatch => ({
   onPressReset : (id) => dispatch(timerReset(id)),
   onPressPause : (id) => dispatch(timerPause(id)),
   onPressRemoveTimer  : ( id ) => dispatch(removeTimer(id)),
-  onPressAddTags : (id) => dispatch(addTags(id))
+  onPressAddTags : (param) => dispatch(addTimerTags(param)) //param - oobject {id, tags}
 })
 
 export default connect(

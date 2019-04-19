@@ -41,7 +41,8 @@ class Clock extends Component{
     }
     onPressAddTagsHandler = () => {
         const { onPressAddTags, id } = this.props;
-        onPressAddTags( id ); 
+        const param = {id: id, tags: [] }
+        onPressAddTags( param ); 
     }
 
     render(){

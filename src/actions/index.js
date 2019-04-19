@@ -48,17 +48,25 @@ export const removeTimer = ( id ) => {
   }
 }
 
-export const addTag = () => {
+export const addTimerTags = ( param ) => {
   return {
-    type: TagActions.addTag,
-    id
+    type    : UserActions.addTimerTags,
+    id      : param.id, 
+    tagsArr : param.tags
   }
 }
 
-export const removeTag = ( id ) => {
+export const addTag = () => {
+  return {
+    type: TagActions.addTag,
+    tagId
+  }
+}
+
+export const removeTag = ( tagId ) => {
   return {
     type: TagActions.removeTag,
-    id
+    tagId
   }
 }
 
@@ -70,6 +78,7 @@ export const TagActions = {
 export const UserActions = {
   add: 'ADD_TIMER',
   remove: 'REMOVE_TIMER',
+  addTimerTags: 'ADD_TIMER_TAGS'
 }
 
 export const TimerActions = {
