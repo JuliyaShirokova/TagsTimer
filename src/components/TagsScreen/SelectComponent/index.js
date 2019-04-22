@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
-import { View, TextInput, SectionList, Text, Button, StyleSheet } from 'react-native';
+import { View, TextInput, SectionList, TouchableOpacity, Text, Button, StyleSheet } from 'react-native';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import  * as colors from '../../../constants/colors';
 
 export default class SelectComponent extends Component{
     state = {
@@ -36,12 +38,78 @@ export default class SelectComponent extends Component{
         data: ['Reading'],
       }];
     
+    renderSelectedItems = () => this.state.selectedItems.map((value, index, arr) => {
+        console.log('value = ', value)  
+        return (
+          <View
+            style={styles.selectedItemContainer}
+          >
+            <Text>{value}</Text>
+          </View>
+          )
+        }
+      )
+    
+    onCHangeTextInput = (text) => {
+      this.setState({text});
+    }
+
+    onPressItem = ( id ) => {
+      const select = this.state.selectedItems.filter(( item, index ) => item === id );
+      console.log('id=', id);
+      console.log('select length=', select.length)
+      if ( select.length === 0 ){
+        console.log('we adding id')
+        const list = [ ...this.state.selectedItems, id ];
+        console.log('list', list)
+        this.setState({selectedItems: list}, () => console.log('selected items ', this.state.selectedItems))          
+      } else {
+        console.log('we remove id')
+        const list = this.state.selectedItems.filter( (item, index) => item !== id );
+        this.setState({selectedItems: list})
+      }
+    }
+    
+    getItemColor = ( id ) => {
+      const _color = (this.state.selectedItems.filter((item, index) => item === id)).length ? colors.alternative : colors.dark
+      return _color;
+    }
+    getIconName = ( id ) => {
+      const _icon = (this.state.selectedItems.filter((item, index) => item === id)).length ? 'bookmark' : 'bookmark-border'
+      return _icon;
+    }
+
+    renderSectionItem = ( obj ) => {
+      const { item, index, section} = obj;
+      const currId = section.id; 
+      return (
+        <View
+          style={styles.itemContainer}
+        >
+          <TouchableOpacity
+            onPress = {(index) => this.onPressItem( currId )}
+            style={styles.itemTouch}
+          >
+            <Text 
+              style={[styles.itemText, {color: this.getItemColor( currId )}]}
+              key={index}
+              >
+                {item}
+            </Text>
+            <MaterialIcons 
+              name={this.getIconName(currId)}
+              size={25} 
+              color={this.getItemColor( currId )} />
+          </TouchableOpacity>
+        </View>
+      )
+    }
 
     render(){
         const getSelectedItems = () => {
             return (
                 <SectionList 
-                    renderItem={({item, index, section}) => <Text key={index}>{item}</Text>}
+                    renderItem={({item, index, section}) => this.renderSectionItem({item, index, section})}
                     sections={this.items}
                     keyExtractor={(item, index) => item + index}
                 />
@@ -56,7 +124,7 @@ export default class SelectComponent extends Component{
             >
                 <TextInput
                     style={styles.inputStyle}
-                    onChangeText={(text) => this.setState({text})}
+                    onChangeText={(text) => this.onCHangeTextInput(text)}
                     value={this.state.text}
                     autoFocus
                     placeholder='enter tag'
@@ -66,9 +134,12 @@ export default class SelectComponent extends Component{
             <View
                 style={styles.textBlock}
             >
-                {
-                    getSelectedItems()
-                }
+                { getSelectedItems() }
+            </View>
+            <View
+              style={styles.selectedItemsBlock}
+            >
+              { this.renderSelectedItems() }
             </View>
           </View>
         )
@@ -96,5 +167,35 @@ const styles = StyleSheet.create({
         paddingVertical: 4,
         borderColor: 'gray',
         borderWidth: 1
+    },
+    itemContainer: {
+      paddingVertical: 10,
+      justifyContent: 'center',
+    },
+    itemTouch: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'center'
+    },
+    itemText: {
+      fontSize: 14,
+      lineHeight: 16,
+    },
+    activeItem: {
+      color: colors.alternative
+    },
+    selectedItemsBlock: {
+      width: '100%',
+      borderWidth: 2,
+      borderColor: 'orange',
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      flexWrap: 'wrap'
+    },
+    selectedItemContainer: {
+      borderWidth: 1,
+      borderColor: 'red',
+      padding: 5,
     }
 })
